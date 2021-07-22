@@ -1,0 +1,52 @@
+# Container with network virtualized using a pre-configured bridge named br-right and
+# veth pair virtual network devices
+lxc.uts.name = left
+lxc.net.0.type = veth
+lxc.net.0.flags = up
+lxc.net.0.link = br-left
+lxc.net.0.ipv4.address = 10.0.0.1/24
+
+#lxc.net.1.ipv4.gateway = 10.0.1.1
+lxc.net.1.ipv4.gateway = auto 
+
+
+##
+
+MPTCP -> test to multipath-tcp.org
+if configuration :
+
+enp0s3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.1.96  netmask 255.255.255.0  broadcast 192.168.1.255
+        inet6 2001:818:e6a7:3a00:ed8:951a:b39d:779  prefixlen 64  scopeid 0x0<global>
+        inet6 2001:818:e6a7:3a00:88a5:2695:1450:a6e0  prefixlen 64  scopeid 0x0<global>
+        inet6 fe80::3b0f:f14e:2ef8:6303  prefixlen 64  scopeid 0x20<link>
+        ether 08:00:27:40:f0:83  txqueuelen 1000  (Ethernet)
+        RX packets 137  bytes 15825 (15.8 KB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 207  bytes 22671 (22.6 KB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+# optimized 
+CXXFLAGS="-Wno-error" 
+    ./waf configure --build-profile=optimized --out=build/optimized --enable-examples --disable-python --enable-tests --enable-sudo --disable-werror  
+
+# debug build
+./waf configure --build-profile=debug --out=build/debug --enable-examples --disable-python --enable-tests --enable-sudo --disable-werror  
+
+
+--enable-static       Compile NS-3 statically:
+--out=OUT   build dir for the project
+
+
+token git : 
+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
+
+
+
+
+// lte 
+rtt min/avg/max/mdev = 19.032/30.070/102.082/17.895 ms
+
+// nr 
+rtt min/avg/max/mdev = 15.133/18.623/32.996/3.696 ms
+

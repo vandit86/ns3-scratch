@@ -1,0 +1,36 @@
+
+UP/dopwn interface 
+
+
+Ptr<Ipv4> ipv4 = n->GetObject<Ipv4> ();
+    uint32_t ipv4ifIndex = 0;
+
+    Simulator::Schedule (Seconds (30),&Ipv4::SetDown,ipv4, ipv4ifIndex);
+    Simulator::Schedule (Seconds (31),&Ipv4::SetUp,ipv4, ipv4ifIndex);
+
+
+
+Ptr<Node> n = nodes.Get (sinkNode);
+for (uint32_t i=0; i<n->GetNDevices (); i++)
+  {
+    Ptr<NetDevice> dev = n->GetDevice (i);
+    NS_LOG_UNCOND (" Device " << i << " type = " << dev->GetInstanceTypeId ().GetName ());
+  }
+
+output:
+Device 0 type = ns3::WifiNetDevice
+Device 1 type = ns3::LoopbackNetDevice
+
+
+
+
+Ptr<Node> node = this->GetObject<Node> ();
+ Ptr<NetDevice> dev = node->GetDevice (incomingIf);
+ Ptr<Ipv6> ipv6 = GetObject<Ipv6> ();
+
+
+----> connect to traces 
+ Config::Connect
+
+ ---> set  delay for example  
+ Config::Set    

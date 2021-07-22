@@ -1,0 +1,58 @@
+# Template used to create this container: /usr/share/lxc/templates/lxc-download
+# Parameters passed to the template: -d mint -r sarah -a amd64
+# For additional config options, please look at lxc.container.conf(5)
+
+# Uncomment the following line to support nesting containers:
+#lxc.include = /usr/share/lxc/config/nesting.conf
+# (Be aware this has security implications)
+
+# Container with network virtualized using a pre-configured bridge named br-right and
+# veth pair virtual network devices
+# second interface 
+
+# Distribution configuration
+lxc.include = /usr/share/lxc/config/common.conf
+
+# For Ubuntu 14.04
+lxc.mount.entry = /sys/kernel/debug sys/kernel/debug none bind,optional 0 0
+lxc.mount.entry = /sys/kernel/security sys/kernel/security none bind,optional 0 0
+lxc.mount.entry = /sys/fs/pstore sys/fs/pstore none bind,optional 0 0
+lxc.mount.entry = mqueue dev/mqueue mqueue rw,relatime,create=dir,optional 0 0
+lxc.arch = linux64
+
+# Container specific configuration
+lxc.uts.name = mp-right 
+lxc.rootfs.path = dir:/var/lib/lxc/mp-right/rootfs
+
+# Network configuration 
+lxc.net.0.type = veth
+lxc.net.0.flags = up
+lxc.net.0.link = br-right
+
+#lxc.net.0.ipv4.address = 11.0.0.1/8
+lxc.net.0.ipv4.address = 13.0.0.2/8
+#lxc.net.0.ipv4.gateway = 13.0.0.1
+
+# second interface 
+lxc.net.1.type = veth
+lxc.net.1.flags = up
+lxc.net.1.link = br-right-1
+
+#lxc.net.1.ipv4.address = 15.0.0.1/8
+lxc.net.1.ipv4.address = 14.0.0.2/8
+
+# hooks
+lxc.hook.mount = /var/lib/lxc/mp-right/ifup.sh
+
+#lxc.net.1.script.up = /var/lib/lxc/mp-right/ifup.sh
+#lxc.hook.start = /var/lib/lxc/mp-right/ifup.sh
+#lxc.net.1.ipv4.gateway = auto 
+
+
+
+
+# Network configuration
+#lxc.net.0.type = veth
+#lxc.net.0.link = lxcbr0
+#lxc.net.0.flags = up
+#lxc.net.0.hwaddr = 00:16:3e:41:xx:xx
