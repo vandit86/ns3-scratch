@@ -31,8 +31,8 @@ ifconfig br-right up
 ifconfig br-right-1 up
 
 # Start LXC containers 
-lxc-start -n mp-left
-lxc-start -n mp-right
+lxc-start -n left
+lxc-start -n right
 
 #show container status 
 lxc-ls -f

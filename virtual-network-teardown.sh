@@ -1,8 +1,8 @@
 #!/bin/sh
 
 #stop containers
-lxc-stop -n mp-left -k
-lxc-stop -n mp-right -k
+lxc-stop -n left -k
+lxc-stop -n right -k
 
 #lxc-destroy -n left
 #lxc-destroy -n right

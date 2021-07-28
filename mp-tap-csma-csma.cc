@@ -101,7 +101,9 @@ int
 main (int argc, char *argv[])
 {
   std::cout << "Start simulation "<< std::endl;
+  double simTime = 60 ; 
   CommandLine cmd (__FILE__);
+  cmd.AddValue ("simTime", "Simulation Time ", simTime);
   cmd.Parse (argc, argv);
 
   //Config::SetDefault ("ns3::DropTailQueue<Packet>::MaxSize", StringValue ("100p"));
@@ -122,9 +124,14 @@ main (int argc, char *argv[])
   NodeContainer nodes;
   nodes.Create (2);
 
-  // NodeContainer nodes_2;
-  // nodes_2.Create(2);
+  // middle nodes 
+  NodeContainer mNodes;
+  mNodes.Create(2);
 
+  InternetStackHelper inet;                     // internet stack helper 
+  Ipv4AddressHelper ipv4h;                      // Ipv4 Address Helper
+
+  inet.Install(mNodes); 
 
   //
   // Use a CsmaHelper to get a CSMA channel created, and the needed net 
@@ -135,21 +142,24 @@ main (int argc, char *argv[])
   //
   CsmaHelper csma;
   //csma.Install()
-  csma.SetChannelAttribute ("DataRate", StringValue ("100Mbps"));
-  csma.SetChannelAttribute ("Delay", TimeValue (MicroSeconds (5)));
-  NetDeviceContainer devices = csma.Install (nodes);
+  csma.SetChannelAttribute ("DataRate", StringValue ("10Mbps"));
+  csma.SetChannelAttribute ("Delay", TimeValue (NanoSeconds (10)));
+  NetDeviceContainer devices_1 = csma.Install (NodeContainer(nodes.Get(0), mNodes.Get(0)));
+  NetDeviceContainer devices_2 = csma.Install (NodeContainer(nodes.Get(1), mNodes.Get(0)));
+  csma.SetChannelAttribute ("Delay", TimeValue (NanoSeconds (10)));
+  NetDeviceContainer devices_3 = csma.Install (NodeContainer(nodes.Get(0), mNodes.Get(1)));
+  NetDeviceContainer devices_4 = csma.Install (NodeContainer(nodes.Get(1), mNodes.Get(1)));
   
-  csma.SetChannelAttribute ("DataRate", StringValue ("100Mbps"));
-  csma.SetChannelAttribute ("Delay", TimeValue (MicroSeconds (5)));
-  NetDeviceContainer devices_1 = csma.Install (nodes);
-  
-  // debug 
-  DataRateValue dr_value ;
-  TimeValue delay_value ;   
-  devices.Get(1)->GetChannel()->GetAttribute("DataRate", dr_value); 
-  devices.Get(1)->GetChannel()->GetAttribute("Delay", delay_value); 
-  std::cout<< " DAta rate ::  "<< dr_value.Get();
-  std::cout<< " delay ::  "<< delay_value.Get();
+
+   // Assign adress 
+  ipv4h.SetBase ("11.0.0.0", "255.0.0.0", "0.0.0.1");
+  ipv4h.Assign (devices_1.Get(1));
+  ipv4h.SetBase ("13.0.0.0", "255.0.0.0", "0.0.0.1");
+  ipv4h.Assign (devices_2.Get(1));
+  ipv4h.SetBase ("15.0.0.0", "255.0.0.0", "0.0.0.1");
+  ipv4h.Assign (devices_3.Get(1));
+  ipv4h.SetBase ("14.0.0.0", "255.0.0.0", "0.0.0.1");
+  ipv4h.Assign (devices_4.Get(1));
 
   //
   // Use the TapBridgeHelper to connect to the pre-configured tap devices for 
@@ -162,19 +172,14 @@ main (int argc, char *argv[])
   tapBridge.SetAttribute ("Mode", StringValue ("UseBridge"));
    
   tapBridge.SetAttribute ("DeviceName", StringValue ("tap-left"));
-  tapBridge.Install (nodes.Get (0), devices.Get (0));
-  tapBridge.SetAttribute ("DeviceName", StringValue ("tap-left-1"));
   tapBridge.Install (nodes.Get (0), devices_1.Get (0));
+  tapBridge.SetAttribute ("DeviceName", StringValue ("tap-left-1"));
+  tapBridge.Install (nodes.Get (0), devices_3.Get (0));
   
-  //
-  // Connect the right side tap to the right side CSMA device on the right-side
-  // ghost node.
-  //
   tapBridge.SetAttribute ("DeviceName", StringValue ("tap-right"));
-  tapBridge.Install (nodes.Get (1), devices.Get (1));
-  
+  tapBridge.Install (nodes.Get (1), devices_2.Get (0));
   tapBridge.SetAttribute ("DeviceName", StringValue ("tap-right-1"));
-  tapBridge.Install (nodes.Get (1), devices_1.Get (1));
+  tapBridge.Install (nodes.Get (1), devices_4.Get (0));
 
   csma.EnablePcapAll("mp-csma",true);
   //csma.EnablePcap() 
@@ -205,10 +210,8 @@ main (int argc, char *argv[])
   ConfigStore outputConfig2;
   outputConfig2.ConfigureDefaults ();
   outputConfig2.ConfigureAttributes ();
-   
-
-  std::cout << "Stop simulation \n"; 
-  Simulator::Stop (Seconds (600.0));
+  
+  Simulator::Stop (Seconds (simTime));
   Simulator::Run ();
   Simulator::Destroy ();
   

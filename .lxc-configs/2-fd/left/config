@@ -1,4 +1,3 @@
-# Template used to create this container: /usr/share/lxc/templates/lxc-download
 # Parameters passed to the template: -d mint -r sarah -a amd64
 # For additional config options, please look at lxc.container.conf(5)
 
@@ -8,20 +7,16 @@
 
 # Container with network virtualized using a pre-configured bridge named br-left and
 # veth pair virtual network devices
-# configure second device 
+# configure second device
 
 # Distribution configuration
 lxc.include = /usr/share/lxc/config/common.conf
 
 # For Ubuntu 14.04
-lxc.mount.entry = /sys/kernel/debug sys/kernel/debug none bind,optional 0 0
-lxc.mount.entry = /sys/kernel/security sys/kernel/security none bind,optional 0 0
-lxc.mount.entry = /sys/fs/pstore sys/fs/pstore none bind,optional 0 0
-lxc.mount.entry = mqueue dev/mqueue mqueue rw,relatime,create=dir,optional 0 0
 lxc.arch = linux64
 
 
-lxc.uts.name = mp-left 
+lxc.uts.name = left
 
 # Network configuration
 lxc.net.0.type = veth
@@ -32,7 +27,7 @@ lxc.net.0.name = eth0
 lxc.net.0.ipv4.address = 11.0.0.2/8
 #lxc.net.0.ipv4.gateway = 11.0.0.1
 
-# 2 interface 
+# 2 interface
 lxc.net.1.type = veth
 lxc.net.1.flags = up
 lxc.net.1.link = br-left-1
@@ -41,16 +36,15 @@ lxc.net.1.name = eth1
 lxc.net.1.ipv4.address = 15.0.0.2/8
 #lxc.net.1.ipv4.gateway = 11.0.0.2
 
-lxc.rootfs.path = dir:/var/lib/lxc/mp-left/rootfs
+lxc.rootfs.path = dir:/var/lib/lxc/left/rootfs
 
 # hooks
-lxc.hook.mount = /var/lib/lxc/mp-left/ifup.sh
+lxc.hook.mount = /var/lib/lxc/left/ifup.sh
 
 # Network configuration
 #lxc.net.0.type = veth
 #lxc.net.0.link = lxcbr0
 #lxc.net.0.flags = up
-#lxc.net.0.hwaddr = 00:16:3e:41:1f:da
-#lxc.net.0.ipv4.address = 10.0.3.205/24
+#lxc.net.0.hwaddr = 00:16:3e:74:9a:bc
 
 

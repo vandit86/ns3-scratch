@@ -126,14 +126,14 @@ main (int argc, char *argv[])
   double simTime = 60;    // sec
   double distance = 60.0; // m
   bool useCa = false;
-  uint64_t path2delay = 1000; // delay between AP and remote host 
+  uint64_t path2delay = 1; // delay between AP and remote host 
 
   // Command line arguments
   CommandLine cmd;
   cmd.AddValue("simTime", "Total duration of the simulation [s])", simTime);
   cmd.AddValue("distance", "Distance between eNBs [m]", distance);
   cmd.AddValue("useCa", "Whether to use carrier aggregation.", useCa);
-  cmd.AddValue("path2delay", "delay between AP and remote host on second path [ns]", path2delay);
+  cmd.AddValue("path2delay", "delay between AP and remote host on second path [us]", path2delay);
   cmd.Parse(argc, argv);
 
    // ****************************************
@@ -232,7 +232,7 @@ main (int argc, char *argv[])
 
   // Copnnect AP with right host through csma
   csma.SetChannelAttribute ("DataRate", DataRateValue (DataRate ("100Mb/s")));
-  csma.SetChannelAttribute ("Delay", TimeValue (NanoSeconds (path2delay)));
+  csma.SetChannelAttribute ("Delay", TimeValue (MicroSeconds (path2delay)));
   NodeContainer csma_AP_right_nodes (nodeAP.Get (0), nodes.Get (1));
   NetDeviceContainer csma_AP_right_devices = csma.Install (csma_AP_right_nodes);
 
@@ -298,8 +298,8 @@ main (int argc, char *argv[])
   NetDeviceContainer csma_left_devices = csma.Install (csma_left_nodes);
 
   // Setup the right ghost node and hook it to the remote node
-  csma.SetChannelAttribute ("DataRate", DataRateValue (DataRate ("10Gb/s"))); // Set high to avoid impact of this link
-  csma.SetChannelAttribute ("Delay", TimeValue (MilliSeconds (1)));
+  csma.SetChannelAttribute ("DataRate", DataRateValue (DataRate ("100Mb/s"))); // Set high to avoid impact of this link
+  csma.SetChannelAttribute ("Delay", TimeValue (MicroSeconds (1)));
   NodeContainer csma_right_nodes (nodes.Get (1), pgw);
   NetDeviceContainer csma_right_devices = csma.Install (csma_right_nodes);
 
@@ -418,13 +418,13 @@ main (int argc, char *argv[])
 
   // LTE connection to ghost nodes
   // csma_right.EnablePcap ("lena-csma-right", csma_right_devices.Get (0), true);
-  csma.EnablePcap ("lena-csma-right", csma_AP_right_devices.Get (0), true);
+  //csma.EnablePcap ("lena-csma-right", csma_AP_right_devices.Get (0), true);
 
-  // csma_left.EnablePcapAll("csma_lte", true);
-  // csma_right.EnablePcapAll("csma_right", true);
+  csma.EnablePcapAll("csma_lte", true);
+  //csma_right.EnablePcapAll("csma_right", true);
 
   // wifi ENABLE PCAP
-  wifiPhy.EnablePcapAll("mp-wifi-lte",true);
+  //wifiPhy.EnablePcapAll("mp-wifi-lte",true);
    
   // Flow monitor
   // Ptr<FlowMonitor> flowMonitor;
