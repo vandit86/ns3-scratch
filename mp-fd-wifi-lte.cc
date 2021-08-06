@@ -169,7 +169,7 @@ main (int argc, char *argv[])
   cmd.AddValue ("remote", "Remote IP address (dotted decimal only please)", remote);
   cmd.AddValue ("tapMask", "Network mask for configure the TAP device (dotted decimal only please)", mask);
   cmd.AddValue ("modePi", "If 'yes' a PI header will be added to the traffic traversing the device(flag IFF_NOPI will be unset).", pi);
-   cmd.AddValue("simTime", "Total duration of the simulation [s])", simTime);
+  cmd.AddValue("simTime", "Total duration of the simulation [s])", simTime);
   cmd.AddValue("path2delay", "delay between AP and remote host on second path [mks]", path2delay);
   cmd.AddValue("path2err", "packet error rate between AP and remote host on second path", path2err);
   cmd.Parse (argc, argv);
@@ -189,11 +189,7 @@ main (int argc, char *argv[])
   // ****************************************
   // Global configurations  
   // ****************************************
-  // config output
-  Config::SetDefault ("ns3::ConfigStore::Filename", StringValue ("output-attributes.txt"));
-  Config::SetDefault ("ns3::ConfigStore::FileFormat", StringValue ("RawText"));
-  Config::SetDefault ("ns3::ConfigStore::Mode", StringValue ("Save"));
-
+  
   //
   // ****************************************
   // Nodes creation   
@@ -243,7 +239,7 @@ main (int argc, char *argv[])
   positionAlloc->Add (Vector (0, 0, 0));    // pos of left
   positionAlloc->Add (Vector (5, 0, 5));    // pos of AP
   positionAlloc->Add (Vector (25, 0, 0));   // pos of right
-  positionAlloc->Add (Vector (30, 0, 10));   // pos of gNodeB
+  positionAlloc->Add (Vector (60, 0, 10));   // pos of eNodeB
 
   mobility.SetPositionAllocator (positionAlloc);
   mobility.SetMobilityModel ("ns3::ConstantPositionMobilityModel");
@@ -267,8 +263,8 @@ main (int argc, char *argv[])
   // wifi helper set params 
   wifi.SetStandard (WIFI_STANDARD_80211a);
   wifi.SetRemoteStationManager ("ns3::ConstantRateWifiManager", "DataMode",
-                                StringValue ("OfdmRate54Mbps"), 
-                                "ControlMode", StringValue ("OfdmRate24Mbps"));
+                                StringValue ("OfdmRate6Mbps"), 
+                                "ControlMode", StringValue ("OfdmRate6Mbps"));
 
   // configure CSMA AP <--> REMOTE 
   csma.SetChannelAttribute ("DataRate", StringValue ("100Mbps"));
@@ -304,13 +300,15 @@ main (int argc, char *argv[])
   Config::SetDefault ("ns3::RrFfMacScheduler::HarqEnabled", BooleanValue (false));
   Config::SetDefault ("ns3::LteHelper::PathlossModel",
                       StringValue ("ns3::FriisSpectrumPropagationLossModel"));
-  Config::SetDefault ("ns3::LteEnbNetDevice::UlBandwidth", UintegerValue (100)); //20MHz bandwidth
+  Config::SetDefault ("ns3::LteEnbNetDevice::UlBandwidth", UintegerValue (100)); // 5MHz,  100 for 20MHz bandwidth
   Config::SetDefault ("ns3::LteEnbNetDevice::DlBandwidth", UintegerValue (100)); //20MHz bandwidth
-  Config::SetDefault ("ns3::LteAmc::AmcModel", EnumValue (LteAmc::PiroEW2010));
+  
+  // testing 
+  // Config::SetDefault ("ns3::CcHelper::DlBandwidth", UintegerValue (100)); // 5MHz,  100 for 20MHz bandwidth
+  // Config::SetDefault ("ns3::ComponentCarrier::DlBandwidth", UintegerValue (100)); // 5MHz,  100 for 20MHz bandwidth
+  
+  Config::SetDefault ("ns3::LteAmc::AmcModel", EnumValue (LteAmc::PiroEW2010)); // Adaptive Modulation and Coding
 
-  ConfigStore outputConfig;
-  outputConfig.ConfigureDefaults ();
-  outputConfig.ConfigureAttributes ();
 
   // TODO:: change to LteHelper lteHelper instead of CreateObject and move to up
 
@@ -335,7 +333,7 @@ main (int argc, char *argv[])
 
   // Link: PGW <---> Remote node through CSMA 
   csma.SetChannelAttribute ("DataRate", DataRateValue (DataRate ("100Mb/s"))); 
-  csma.SetChannelAttribute ("Delay", TimeValue (MicroSeconds(10)));
+  csma.SetChannelAttribute ("Delay", TimeValue (MicroSeconds(1)));
   NodeContainer nodes_r_pgw (nodes.Get (1), pgw);
   NetDeviceContainer dev_r_pgw = csma.Install (nodes_r_pgw);
 
@@ -512,7 +510,16 @@ main (int argc, char *argv[])
   // ********************************************************
   
   // realtime jitter calculation :
- Simulator::Schedule (MilliSeconds(100), &JitterMonitor, realSim);
+  // change interval 
+  // Simulator::Schedule (MilliSeconds(100), &JitterMonitor, realSim);
+
+// config output , write config params to file 
+  Config::SetDefault ("ns3::ConfigStore::Filename", StringValue ("output-attributes.txt"));
+  Config::SetDefault ("ns3::ConfigStore::FileFormat", StringValue ("RawText"));
+  Config::SetDefault ("ns3::ConfigStore::Mode", StringValue ("Save"));
+  ConfigStore outputConfig;
+  outputConfig.ConfigureDefaults ();
+  outputConfig.ConfigureAttributes ();
 
   // print routing table of PGW
   // Ptr<ns3::OutputStreamWrapper> strwrp = Create<OutputStreamWrapper> (&std::cout);

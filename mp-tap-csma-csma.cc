@@ -26,36 +26,7 @@
 // Containers to set up virtual networks" which uses this code as an 
 // example.
 //
-// The configuration you are after is explained in great detail in the 
-// HOWTO, but looks like the following:
-//
-//  +----------+                           +----------+
-//  | virtual  |                           | virtual  |
-//  |  Linux   |                           |  Linux   |
-//  |   Host   |                           |   Host   |
-//  |          |                           |          |
-//  |   eth0   |                           |   eth0   |
-//  +----------+                           +----------+
-//       |                                      |
-//  +----------+                           +----------+
-//  |  Linux   |                           |  Linux   |
-//  |  Bridge  |                           |  Bridge  |
-//  +----------+                           +----------+
-//       |                                      |
-//  +------------+                       +-------------+
-//  | "tap-left" |                       | "tap-right" |
-//  +------------+                       +-------------+
-//       |           n0            n1           |
-//       |       +--------+    +--------+       |
-//       +-------|  tap   |    |  tap   |-------+
-//               | bridge |    | bridge |
-//               +--------+    +--------+
-//               |  CSMA  |    |  CSMA  |
-//               +--------+    +--------+
-//                   |             |
-//                   |             |
-//                   |             |
-//                   ===============
+
 //                      CSMA LAN
 //
 #include <iostream>
