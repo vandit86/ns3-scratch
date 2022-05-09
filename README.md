@@ -12,15 +12,7 @@ Installation in chroot jail https://www.projectguideline.com/installing-ns3-35-i
 ### debug 
 > ./waf configure --build-profile=debug --out=build/debug --enable-examples --disable-python --enable-tests --enable-sudo --disable-werror  
 
-## Common 
-### Redirect to file 
-> ./waf --run "m_wave_80211p" > log.out 2>&1
-
-### find examples in code 
-> find . -name '*.cc' | xargs grep NS_LOG_COMPONENT_DEFINE | grep -i WifiNetDevice
-> find . −name ’ ∗ . cc ’ | xargs grep CourseChange | grep Connect
-
-### debuging GDB NS3  
+## debuging GDB NS3  
 Start with: to load it in gdb:
 > ./waf --run "mp-tap-wifi-lte --simTime=60" --gdb
 
@@ -28,6 +20,9 @@ Start with: to load it in gdb:
 Type "run" to start execution. When it fails, type "bt" to get backtrace on where you were going. Restart, but this time before "run" set breakpoints, e.g. break mysource.cc:1234 to stop execution at that point. Then you can either type n or s to step line-by-line through the execution (s steps into function calls, n does not). You can use 'print varname' to check contents of variables and pretty much anything else (for class variables, you might need to use 'print this->classvar').
 
 ## Interact with the real world
+### Our Architecture 
+![Alt text](./img/emu-1.png)
+
 different possibilities : https://www.nsnam.org/wiki/HOWTO_make_ns-3_interact_with_the_real_world 
 
 Virtual Machine: https://www.nsnam.org/wiki/HOWTO_use_VMware_to_set_up_virtual_networks_(Windows)
@@ -37,6 +32,14 @@ LInux Containers https://www.nsnam.org/wiki/HOWTO_Use_Linux_Containers_to_set_up
 Combine with CORE network emulator: https://www.nsnam.org/wiki/HOWTO_Use_CORE_to_test_ns-3_protocols
 	
 ns3-lxc project, released on June 17, 2017.	https://github.com/buzz66boy/ns3-lxc/wiki/Release-v0.1
+
+## Common 
+### Redirect to file 
+> ./waf --run "m_wave_80211p" > log.out 2>&1
+
+### find examples in code 
+> find . -name '*.cc' | xargs grep NS_LOG_COMPONENT_DEFINE | grep -i WifiNetDevice
+> find . −name ’ ∗ . cc ’ | xargs grep CourseChange | grep Connect
 
 ## NS3 Tools
 
